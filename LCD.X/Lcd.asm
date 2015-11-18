@@ -28,13 +28,25 @@
     ;--------| MENSAGEM QUE SERA MOSTRADA NO LCD
         BANK_0
         call INICIA_LCD        
-        movlw 'A'
+        movlw 'T'
         call ESCREVE_DADO_LCD        
-        movlw 'B'
+        movlw 'E'
         call ESCREVE_DADO_LCD
-        movlw 'C'
+        movlw 'S'
         call ESCREVE_DADO_LCD
-        movlw 'D'
+        movlw 'T'
+        call ESCREVE_DADO_LCD        
+        movlw ' '
+        call ESCREVE_DADO_LCD        
+        movlw 'T'
+        call ESCREVE_DADO_LCD        
+        movlw 'E'
+        call ESCREVE_DADO_LCD        
+        movlw 'X'
+        call ESCREVE_DADO_LCD        
+        movlw 'T'
+        call ESCREVE_DADO_LCD        
+        movlw 'O'
         call ESCREVE_DADO_LCD        
         goto $                       ;finalizar o programa (JMP)
 
