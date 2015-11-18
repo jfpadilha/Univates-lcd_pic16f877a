@@ -1,11 +1,11 @@
     #include "p16f877a.inc"
-    
-    #define BANK_1 bsf STATUS, RP0 ;ir para banco 1 (setar rp0)
-    #define BANK_0 bcf STATUS, RP0 ;ir para banco 1 (setar rp0)  
 
     ; CONFIG
     ; __config 0xFFBA
         __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _BOREN_OFF & _LVP_ON & _CPD_OFF & _WRT_OFF & _CP_OFF
+        
+        #define BANK_1 bsf STATUS, RP0 ;ir para banco 1 (setar rp0)
+        #define BANK_0 bcf STATUS, RP0 ;ir para banco 1 (setar rp0)  
 
      ;------| CONFIGURACAO DOS REGISTRADORES 
         CBLOCK 20h                      ;para criar registradores
@@ -27,9 +27,10 @@
 
     ;--------| MENSAGEM QUE SERA MOSTRADA NO LCD
         BANK_0
-        call INICIA_LCD        
+        call INICIA_LCD    
+        
         movlw 'T'
-        call ESCREVE_DADO_LCD        
+        call ESCREVE_DADO_LCD
         movlw 'E'
         call ESCREVE_DADO_LCD
         movlw 'S'
@@ -47,7 +48,8 @@
         movlw 'T'
         call ESCREVE_DADO_LCD        
         movlw 'O'
-        call ESCREVE_DADO_LCD        
+        call ESCREVE_DADO_LCD
+        
         goto $                       ;finalizar o programa (JMP)
 
     ;--------| COMANDOS PROCESSAMENTO LCD
@@ -64,7 +66,7 @@
         call ESCREVE_COMANDO_LCD
         movlw 01h
         call ESCREVE_COMANDO_LCD
-        call ATRASO_LCD
+        call ATRASO_LIMPA_LCD
         return
 
     ESCREVE_COMANDO_LCD
@@ -78,7 +80,6 @@
     ESCREVE_DADO_LCD
         bsf PORTE, RE0              ;Define dado no LCD(RS=1)
         movwf PORTD
-        bsf PORTE, RE0             ;define dado no LCD
         bsf PORTE, RE1             ;ativa ENABLE do LCD
         bcf PORTE, RE1             ;desativa ENABLE LCD (disable)    
         call ATRASO_LCD
@@ -87,21 +88,17 @@
     ATRASO_LCD                      ;Atraso de 40us para LCD
         movlw 26                    ;8 começa em 8 clocks o resto é 4
         movwf contador
-
     RET_ATRASO_LCD
         decfsz contador             ;8 clocks (porque fez salto)
         goto RET_ATRASO_LCD         ;4 clocks
+        return
 
     ATRASO_LIMPA_LCD
         movlw 40
         movwf contador2
-
     RET_ATRASO_LIMPA_LCD
         call ATRASO_LCD
         decfsz contador2             ;8 clocks (porque fez salto)
         goto RET_ATRASO_LIMPA_LCD       ;4 clocks
-        return
-        
+        return        
     end
-
-

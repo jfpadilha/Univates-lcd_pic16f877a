@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=Lcd.asm LcdRonaldo.asm
+SOURCEFILES_QUOTED_IF_SPACED=Lcd.asm
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Lcd.o ${OBJECTDIR}/LcdRonaldo.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/Lcd.o.d ${OBJECTDIR}/LcdRonaldo.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/Lcd.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/Lcd.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/Lcd.o ${OBJECTDIR}/LcdRonaldo.o
+OBJECTFILES=${OBJECTDIR}/Lcd.o
 
 # Source Files
-SOURCEFILES=Lcd.asm LcdRonaldo.asm
+SOURCEFILES=Lcd.asm
 
 
 CFLAGS=
@@ -90,14 +90,6 @@ ${OBJECTDIR}/Lcd.o: Lcd.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${DEP_GEN} -d "${OBJECTDIR}/Lcd.o"
 	@${FIXDEPS} "${OBJECTDIR}/Lcd.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
-${OBJECTDIR}/LcdRonaldo.o: LcdRonaldo.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/LcdRonaldo.o.d 
-	@${RM} ${OBJECTDIR}/LcdRonaldo.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/LcdRonaldo.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -d__DEBUG -d__MPLAB_DEBUGGER_PICKIT2=1 -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/LcdRonaldo.lst\\\" -e\\\"${OBJECTDIR}/LcdRonaldo.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/LcdRonaldo.o\\\" \\\"LcdRonaldo.asm\\\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/LcdRonaldo.o"
-	@${FIXDEPS} "${OBJECTDIR}/LcdRonaldo.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
 else
 ${OBJECTDIR}/Lcd.o: Lcd.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -106,14 +98,6 @@ ${OBJECTDIR}/Lcd.o: Lcd.asm  nbproject/Makefile-${CND_CONF}.mk
 	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/Lcd.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/Lcd.lst\\\" -e\\\"${OBJECTDIR}/Lcd.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/Lcd.o\\\" \\\"Lcd.asm\\\" 
 	@${DEP_GEN} -d "${OBJECTDIR}/Lcd.o"
 	@${FIXDEPS} "${OBJECTDIR}/Lcd.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
-	
-${OBJECTDIR}/LcdRonaldo.o: LcdRonaldo.asm  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/LcdRonaldo.o.d 
-	@${RM} ${OBJECTDIR}/LcdRonaldo.o 
-	@${FIXDEPS} dummy.d -e "${OBJECTDIR}/LcdRonaldo.err" $(SILENT) -c ${MP_AS} $(MP_EXTRA_AS_PRE) -q -p$(MP_PROCESSOR_OPTION) -u  -l\\\"${OBJECTDIR}/LcdRonaldo.lst\\\" -e\\\"${OBJECTDIR}/LcdRonaldo.err\\\" $(ASM_OPTIONS)   -o\\\"${OBJECTDIR}/LcdRonaldo.o\\\" \\\"LcdRonaldo.asm\\\" 
-	@${DEP_GEN} -d "${OBJECTDIR}/LcdRonaldo.o"
-	@${FIXDEPS} "${OBJECTDIR}/LcdRonaldo.o.d" $(SILENT) -rsi ${MP_AS_DIR} -c18 
 	
 endif
 
