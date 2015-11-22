@@ -1,104 +1,141 @@
-    #include "p16f877a.inc"
 
-    ; CONFIG
-    ; __config 0xFFBA
-        __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _BOREN_OFF & _LVP_ON & _CPD_OFF & _WRT_OFF & _CP_OFF
-        
-        #define BANK_1 bsf STATUS, RP0 ;ir para banco 1 (setar rp0)
-        #define BANK_0 bcf STATUS, RP0 ;ir para banco 1 (setar rp0)  
+; PIC16F877A Configuration Bit Settings
 
-     ;------| CONFIGURACAO DOS REGISTRADORES 
-        CBLOCK 20h                      ;para criar registradores
-        contador
-        contador2
-        ENDC                            ;fechar o CBLOCK
+; ASM source line config statements
 
-    ;--------| CONFIGURACAO 
-        org 0
-        BANK_1
-        movlw 0                    ;ativar o TRISD como saida (valor literal)
-        movwf TRISD                ;porta D agora é saida
+#include "p16f877a.inc"
 
-        movlw b'11101100'          ;I: PINMODE=0 para porta D ser I/0 (o primeiro 0 pra nao colocar a porta D paralela)
-        movwf TRISE                ;bit 0 a 1 da porta E sao saidas
+; CONFIG
+; __config 0xFFBA
+ __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _BOREN_OFF & _LVP_ON & _CPD_OFF & _WRT_OFF & _CP_OFF
 
-        movlw b'00001110'          ;pinos configurados para sinal digital
-        movwf ADCON1
+#define BANCO0   bcf STATUS, RP0
+#define BANCO1   bsf STATUS, RP0
 
-    ;--------| MENSAGEM QUE SERA MOSTRADA NO LCD
-        BANK_0
-        call INICIA_LCD    
-        
-        movlw 'T'
-        call ESCREVE_DADO_LCD
-        movlw 'E'
-        call ESCREVE_DADO_LCD
-        movlw 'S'
-        call ESCREVE_DADO_LCD
-        movlw 'T'
-        call ESCREVE_DADO_LCD        
-        movlw ' '
-        call ESCREVE_DADO_LCD        
-        movlw 'T'
-        call ESCREVE_DADO_LCD        
-        movlw 'E'
-        call ESCREVE_DADO_LCD        
-        movlw 'X'
-        call ESCREVE_DADO_LCD        
-        movlw 'T'
-        call ESCREVE_DADO_LCD        
-        movlw 'O'
-        call ESCREVE_DADO_LCD
-        
-        goto $                       ;finalizar o programa (JMP)
+ CBLOCK 20h
+ contador
+ contador2
+ endc
 
-    ;--------| COMANDOS PROCESSAMENTO LCD
-    INICIA_LCD
-        movlw 38h
-        call ESCREVE_COMANDO_LCD        
-        movlw 38h        
-        call ESCREVE_COMANDO_LCD
-        movlw 38h
-        call ESCREVE_COMANDO_LCD         
-        movlw 0Ch
-        call ESCREVE_COMANDO_LCD
-        movlw 06h
-        call ESCREVE_COMANDO_LCD
-        movlw 01h
-        call ESCREVE_COMANDO_LCD
-        call ATRASO_LIMPA_LCD
-        return
+ org 0
 
-    ESCREVE_COMANDO_LCD
-        bcf PORTE, RE0              ; Define dado no LCD(RS=1)
-        movwf PORTD
-        bsf PORTE, RE1             ;ativa ENABLE do LCD
-        bcf PORTE, RE1             ;desativa ENABLE LCD (disable)
-        call ATRASO_LCD 
-        return 
-        
-    ESCREVE_DADO_LCD
-        bsf PORTE, RE0              ;Define dado no LCD(RS=1)
-        movwf PORTD
-        bsf PORTE, RE1             ;ativa ENABLE do LCD
-        bcf PORTE, RE1             ;desativa ENABLE LCD (disable)    
-        call ATRASO_LCD
-        return
-        
-    ATRASO_LCD                      ;Atraso de 40us para LCD
-        movlw 26                    ;8 começa em 8 clocks o resto é 4
-        movwf contador
-    RET_ATRASO_LCD
-        decfsz contador             ;8 clocks (porque fez salto)
-        goto RET_ATRASO_LCD         ;4 clocks
-        return
+    BANCO1
 
-    ATRASO_LIMPA_LCD
-        movlw 40
-        movwf contador2
-    RET_ATRASO_LIMPA_LCD
-        call ATRASO_LCD
-        decfsz contador2             ;8 clocks (porque fez salto)
-        goto RET_ATRASO_LIMPA_LCD       ;4 clocks
-        return        
-    end
+    movlw 0
+    movwf TRISD         ; Porta D é saida
+
+    movlw b'11101100'   ; PSPMODE=0 para porta D ser I/O
+    movwf TRISE         ; Bits 0 e 1 da porta E sao saidas
+
+    movlw b'00001110'   ; Pinos configurados como digitais
+    movwf ADCON1
+    
+    movlw b'00000111'   ; Timer 0 com clock interno e prescaler 256
+    movwf OPTION_REG
+    
+    BANCO0
+
+    movlw b'00110001'   ; Timer 1 com clock interno e prescaler 8
+    movwf T1CON
+
+    call  inicia_lcd
+
+    movlw 'A'
+    call  escreve_dado_lcd
+
+    call espera_1s_timer1
+
+    movlw 'B'
+    call  escreve_dado_lcd
+
+    call espera_1s_timer1
+
+    movlw 'C'
+    call  escreve_dado_lcd
+
+    goto  $              ; Trava programa
+
+espera_1s_timer1
+    movlw 2                
+    movwf contador
+    movlw 0Bh               ; Valor para 62500 contagens (500ms)
+    movwf TMR1L             ; 65536 - 62500 = 3036 => 0BDCh      
+    movlw 0DCh
+    movwf TMR1H
+aguarda_estouro_timer1
+    btfss PIR1, TMR1IF    ; Espera timer1 estourar
+    goto  aguarda_estouro_timer1
+    movlw 0Bh               ; Reprograma para 62500 contagens (500ms)
+    movwf TMR1L             ; 65536 - 62500 = 3036 => 0BDCh      
+    movlw 0DCh
+    movwf TMR1H
+    bcf   PIR1, TMR1IF      ; Limpa flag de estouro
+    decfsz contador         ; Aguarda 2 ocorrencias ( 2x500ms= 1s)
+    goto  aguarda_estouro_timer1
+    return
+
+espera_1s
+    movlw 20                
+    movwf contador
+    movlw 60                ; Valor para 196 contagens (50ms)
+    movwf TMR0              ; 256 - 196 = 60      
+aguarda_estouro
+    btfss INTCON, TMR0IF    ; Espera timer0 estourar
+    goto  aguarda_estouro
+    movlw 60                ; Reprograma para 196 contagens (50ms)
+    movwf TMR0              ; 256 - 196 = 60
+    bcf   INTCON, TMR0IF    ; Limpa flag de estouro
+    decfsz contador         ; Aguarda 20 ocorrencias ( 20x50ms= 1s)
+    goto  aguarda_estouro
+    return
+
+inicia_lcd
+    movlw 38h
+    call  escreve_comando_lcd
+    movlw 38h
+    call  escreve_comando_lcd
+    movlw 38h
+    call  escreve_comando_lcd
+    movlw 0Ch
+    call  escreve_comando_lcd
+    movlw 06h
+    call  escreve_comando_lcd
+    movlw 01h
+    call  escreve_comando_lcd
+    call  atraso_limpa_lcd
+    return
+
+escreve_comando_lcd
+    bcf   PORTE, RE0    ; Define comando no LCD (RS=0)
+    movwf PORTD
+    bsf   PORTE, RE1     ; Ativa ENABLE do LCD
+    bcf   PORTE, RE1     ; Desativa ENABLE do LCD
+    call  atraso_lcd
+    return
+
+escreve_dado_lcd
+    bsf   PORTE, RE0    ; Define dado no LCD (RS=1)
+    movwf PORTD
+    bsf   PORTE, RE1     ; Ativa ENABLE do LCD
+    bcf   PORTE, RE1     ; Desativa ENABLE do LCD
+    call  atraso_lcd
+    return
+
+atraso_lcd                 ; Atraso de 40us para LCD
+    movlw 26               ; 8 clocks
+    movwf contador         ; 4 clocks
+ret_atraso_lcd
+    decfsz contador        ; 8 clocks
+    goto ret_atraso_lcd    ; 4 clocks
+    return
+
+atraso_limpa_lcd
+    movlw 40
+    movwf contador2
+ret_atraso_limpa_lcd
+    call atraso_lcd
+    decfsz contador2
+    goto ret_atraso_limpa_lcd
+    return
+
+ end
