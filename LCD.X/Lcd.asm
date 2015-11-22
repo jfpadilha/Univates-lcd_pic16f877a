@@ -1,24 +1,23 @@
 
-; PIC16F877A Configuration Bit Settings
+    ; PIC16F877A Configuration Bit Settings
 
-; ASM source line config statements
+    ; ASM source line config statements
 
-#include "p16f877a.inc"
+    #include "p16f877a.inc"
 
-; CONFIG
-; __config 0xFFBA
- __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _BOREN_OFF & _LVP_ON & _CPD_OFF & _WRT_OFF & _CP_OFF
+    ; CONFIG
+    ; __config 0xFFBA
+     __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _BOREN_OFF & _LVP_ON & _CPD_OFF & _WRT_OFF & _CP_OFF
 
-#define BANCO0   bcf STATUS, RP0
-#define BANCO1   bsf STATUS, RP0
+    #define BANCO0   bcf STATUS, RP0
+    #define BANCO1   bsf STATUS, RP0
 
- CBLOCK 20h
- contador
- contador2
- endc
+     CBLOCK 20h
+     contador
+     contador2
+     endc
 
  org 0
-
     BANCO1
 
     movlw 0
